@@ -1,11 +1,29 @@
+
+import { useHistory } from 'react-router-dom';
+
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
 import googleIconImg from '../assets/images/google-icon.svg';
 
 import '../styles/auth.scss';
 import { Button } from '../components/Button';
+import { useAuth } from '../hooks/useAuth';
+
 
 export function Home() {
+  // toda função que começa com "use" no react é chamado de hook
+  // e todo o hook tem que está dentro do componente, pois ele faz uso de informações que fazem uso do contexto do componente
+  const history = useHistory();
+  const { user, signInWithGoogle } = useAuth();
+
+  async function handleCreateRoom() {
+    if (!user) {
+      await signInWithGoogle();
+    }
+
+    history.push('/rooms/new')
+  }
+
   return (
     <div id="page-auth">
       <aside>
@@ -16,7 +34,7 @@ export function Home() {
       <main>
         <div className="main-content">
           <img src={logoImg} alt="Letmesk" />
-          <button className="create-room">
+          <button onClick={handleCreateRoom} className="create-room">
             <img src={googleIconImg} alt="" />
             Crie sua sala com o Google
           </button>
